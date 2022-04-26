@@ -4,6 +4,7 @@ import json
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import tensorflow_hub as hub
+from tensorflow.keras.models import load_model
 
 from utilities import process_image,predict
 
@@ -17,13 +18,14 @@ parser.add_argument('--category_names',action="store",dest='category_names',defa
 
 results=parser.parse_args()
 
-reloaded_keras_model_from_SavedModel = tf.keras.models.load_model(results.model_path,custom_objects={'KerasLayer': hub.KerasLayer})
-model=reloaded_keras_model_from_SavedModel
+
 
 
 with open(results.category_names, 'r') as f:
     class_names = json.load(f)
 
+reloaded_keras_model_from_SavedModel = load_model(results.model_path,custom_objects={'KerasLayer': hub.KerasLayer})
+model=reloaded_keras_model_from_SavedModel
 
 probs, classes=predict(results.image_path,image_size,model,results.top_K)
 
